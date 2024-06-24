@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
@@ -11,6 +12,20 @@ namespace reql_personnaliser
     {
         public static void Main()
         {
+            // Déclarer une liste de chaînes
+            List<string> conditionsList = new List<string>();
+
+            // Ajouter des éléments à la liste
+            conditionsList.Add("date(tf.row_add) between '2023-11-03' and '2023-11-03'");
+            conditionsList.Add("tf.kind = 'Féminin'");
+            conditionsList.Add("tf.fk_cat_member = 'HM1-2'");
+            conditionsList.Add("cat_member.fk_cat_adhesion = 'HM1-2'");
+            conditionsList.Add("tf.id_member = 'HM1-3'");
+            conditionsList.Add("tf.fk_zs = 'HM1-1'");
+            conditionsList.Add("zs.fk_ds = 'HM1-1'");
+            conditionsList.Add("(ifnull((year(now()) - year(tf.birthday)), 0)) >= '0' and (ifnull((year(now()) - year(tf.birthday)), 0)) <= '100'");
+            conditionsList.Add("affect.fk_cohorte = 'HM1-1'");
+
             string[] fields = { "(select member.id_member from member where member.fk_cat_member = tf.fk_cat_member and member.dependent = 'False') as Id_resp", "(select member.names from member where member.fk_cat_member = tf.fk_cat_member and member.dependent = 'False') as Noms_resp", "(select member.kind from member where member.fk_cat_member = tf.fk_cat_member and member.dependent = 'False') as Kind_resp", "(select member.birthday from member where member.fk_cat_member = tf.fk_cat_member and member.dependent = 'False') as Birthday_resp", "(select member.site_birth from member where member.fk_cat_member = tf.fk_cat_member and member.dependent = 'False') as Site_resp", "(select member.career from member where member.fk_cat_member = tf.fk_cat_member and member.dependent = 'False') as Career_resp", "(select member.dependent from member where member.fk_cat_member = tf.fk_cat_member and member.dependent = 'False') as Dependent_resp", "(select member.civil_state from member where member.fk_cat_member = tf.fk_cat_member and member.dependent = 'False') as Civil_state_resp", "(select member.province from member where member.fk_cat_member = tf.fk_cat_member and member.dependent = 'False') as Province_resp", "(select member.town from member where member.fk_cat_member = tf.fk_cat_member and member.dependent = 'False') as Town_resp", "(select member.commune from member where member.fk_cat_member = tf.fk_cat_member and member.dependent = 'False') as Commune_resp", "(select member.qr from member where member.fk_cat_member = tf.fk_cat_member and member.dependent = 'False') as Qr_resp", "(select member.territory from member where member.fk_cat_member = tf.fk_cat_member and member.dependent = 'False') as Territory_resp", "(select member.tel1 from member where member.fk_cat_member = tf.fk_cat_member and member.dependent = 'False') as Tel1_resp", "(select member.tel2 from member where member.fk_cat_member = tf.fk_cat_member and member.dependent = 'False') as Tel2_resp", "(select member.img from member where member.fk_cat_member = tf.fk_cat_member and member.dependent = 'False') as Img_resp", "(tf.id_member) as Id", "(tf.names) as Names", "(tf.kind) as Kind", "(tf.birthday) as Birthday", "(tf.site_birth) as Site", "(tf.career) as Career", "(tf.dependent) as Dependance", "(tf.civil_state) as Civil_state", "(tf.province) as Province", "(tf.town) as Town", "(tf.commune) as Commune", "(tf.qr) as Qr", "(tf.territory) as Territory", "(tf.tel1) as Tel1", "(tf.tel2) as Tel2", "(tf.img) as Img","ifnull((year(now()) - year(tf.birthday)), 0) as Age" };
             
             string[] conditions = new string[]
@@ -25,6 +40,8 @@ namespace reql_personnaliser
                 "(ifnull((year(now()) - year(tf.birthday)), 0)) >= '0' and (ifnull((year(now()) - year(tf.birthday)), 0)) <= '100'",
                 "affect.fk_cohorte = 'HM1-1'"
             };
+            // Convertir la liste en tableau
+            conditions = conditionsList.ToArray();
 
             string sqlQuery = BuildQuery(conditions, true, true, true, true, true, fields);
             Console.WriteLine(sqlQuery);
